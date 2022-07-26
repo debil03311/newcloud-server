@@ -10,8 +10,7 @@ import * as path from 'node:path';
 import { App } from '@tinyhttp/app';
 import { json } from 'milliparsec';
 
-const app = new App();
-app.use(json());
+const app = new App().use(json());
 
 // Ughhhhh
 app.get('/favicon.ico', (_, response)=> response.status(404));
@@ -25,6 +24,10 @@ function getLocalPath(requestPath) {
   requestPath = requestPath.replace(/\/.*?(?=\/)/, '');
   return `${__dirname}/root/${requestPath}`;
 }
+
+/*
+ * GET
+ */
 
 // Reading files
 app.get('/cat/*', (request, response)=> {
@@ -49,6 +52,10 @@ app.get('/ls/*', (request, response)=> {
     : response.status(406).send('Not a directory') // Not Acceptable
 });
 
+/*
+ * POST
+ */
+
 app.post('/write/*', (request, response)=> {
   const localPath = getLocalPath(request.path);
   const fileContent = request.body.content;
@@ -57,21 +64,24 @@ app.post('/write/*', (request, response)=> {
     return response.status(404).send('File does not exist');
 
   if (!fs.statSync(localPath).isFile())
-    return response.status(405).send('Can not edit a directory'); // Method Not Allowed
+    return response.status(405) // Method Not Allowed
+      .send('Can not edit a directory')
 
   if (!fileContent)
-    return response.status(406).send('File content can not be empty'); // Not Acceptable
+    return response.status(406) // Not Acceptable
+      .send('File content can not be empty')
 
   fs.writeFileSync(localPath, fileContent);
   return response.status(200).send('File overwritten sucessfully');
 });
 
-app.get('/touch/*', (request, response)=> {
+app.post('/touch/*', (request, response)=> {
   const localPath = getLocalPath(request.path);
 
   if (fs.existsSync(localPath)
   &&  fs.statSync(localPath).isFile())
-    return response.status(409).send('File already exists'); // Conflict
+    return response.status(409) // Conflict
+      .send('This file or a directory with the same name already exists')
   
   fs.writeFileSync(localPath, '');
   response.status(201); // Created
@@ -81,11 +91,12 @@ app.get('/touch/*', (request, response)=> {
   return response.send('File created successfully');
 });
 
-app.get('/mkdir/*', (request, response)=> {
+app.post('/mkdir/*', (request, response)=> {
   const localPath = getLocalPath(request.path);
 
   if (fs.existsSync(localPath))
-    return response.status(409).send('Directory already exists'); // Conflict
+    return response.status(409) // Conflict
+      .send('This directory or a file with the same name already exists')
 
   fs.mkdirSync(localPath);
   response.status(201);
@@ -94,7 +105,11 @@ app.get('/mkdir/*', (request, response)=> {
   return response.send('Directory created successfully'); // Created
 });
 
-app.get('/rm/*', (request, response)=> {
+/*
+ * DELETE
+ */
+
+app.delete('/rm/*', (request, response)=> {
   if (request.path === '/rm/')
     return response.status(403).send('Can not delete the root directory'); // Forbidden
 

@@ -12,28 +12,44 @@ The few server-side commands can be run by making appropriate HTTP requests to t
 https://example.com/:commandName/:pathToFile*
 ```
 
-The following commands can be excuted via GET requests:
-- `mkdir` - creates a directory
-- `touch` - creates a file
-- `ls` - responds with a JSON `Array<String>` of all the files in a directory
-- `cat` - responds with the contents of a file in plain text
-- `rm` - removes a file or directory
+The following commands are available via the following request methods:
 
-Additionally, the following POST commands are available:
-- `write` - overwrites the contents of a file
+- GET
+  - `ls` - responds with a JSON `Array<String>` of all the files in a directory
+  - `cat` - responds with the contents of a file in plain text
+- POST
+  - `mkdir` - creates a directory
+    - `'null'`
+  - `touch` - creates a file
+    - `'null'`
+  - `write` - overwrites the contents of a file
+    - `content: String`
+- DELETE
+  - `rm` - removes a file or directory
 
 ## Usage
 ```javascript
-// GET request example
-// A new, empty file will be created inside the /files directory
-fetch('https://example.com/touch/files/file.txt')
-
-// POST request example
-// The file we've just created will now contain the text "Hello, world!"
-fetch('https://example.com/write/files/file.txt', {
+// A new directory will be created inside of the root folder
+fetch('https://example.com/mkdir/files', {
   method: 'POST',
-  body: JSON.stringify({
-    content: 'Hello, world!'
-  })
+  body: 'null'
 })
+
+fetch('https://example.com/ls/files/') // ['new_file.txt']
+
+// An empty file will be created inside /files
+fetch('https://example.com/touch/files/new_file.txt', {
+  method: 'POST',
+  body: 'null'
+})
+
+fetch('https://example.com/write/files/new_file.txt', {
+  method: 'POST',
+  body: JSON.stringify({ content: 'Hello, world!' })
+})
+
+fetch('https://example.com/cat/files/new_file.txt') // Hello, world!
+
+fetch('https://example.com/rm/files/new_file.txt',
+  { method: 'DELETE' })
 ```
