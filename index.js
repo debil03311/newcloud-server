@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 config();
 
-const PORT = process.env.PORT || 2000;
+const PORT = process.env.PORT || 3000;
 const __dirname = process.cwd();
 
 import * as fs from 'node:fs';
@@ -12,8 +12,10 @@ import { json } from 'milliparsec';
 
 const app = new App().use(json());
 
-// Ughhhhh
-app.get('/favicon.ico', (_, response)=> response.status(404));
+/**
+ * @param {Array<{name: String, type: String}>} z
+ */
+function lol(z) {}
 
 /**
  * @param {String} requestPath 
@@ -24,6 +26,9 @@ function getLocalPath(requestPath) {
   requestPath = requestPath.replace(/\/.*?(?=\/)/, '');
   return `${__dirname}/root/${requestPath}`;
 }
+
+// Ughhhhh
+app.get('/favicon.ico', (_, response)=> response.status(404));
 
 /*
  * GET
@@ -47,8 +52,16 @@ app.get('/ls/*', (request, response)=> {
   if (!fs.existsSync(localPath))
     return response.status(404).send(null);
 
+  const directoryContent = fs.readdirSync(localPath)
+    .map((child)=> ({
+      name: child,
+      type: fs.statSync(`${localPath}/${child}`).isFile()
+        ? 'file'
+        : 'folder'
+    }))
+
   return (fs.statSync(localPath).isDirectory())
-    ? response.status(200).json(fs.readdirSync(localPath))
+    ? response.status(200).json(directoryContent)
     : response.status(406).send('Not a directory') // Not Acceptable
 });
 

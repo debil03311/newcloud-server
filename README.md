@@ -15,7 +15,7 @@ https://example.com/:commandName/:pathToFile*
 The following commands are available via the following request methods:
 
 - GET
-  - `ls` - responds with a JSON `Array<String>` of all the files in a directory
+  - `ls` - responds with `Array<{name: String, type: String}>` where type is either `'file'` or `'folder'`
   - `cat` - responds with the contents of a file in plain text
 - POST
   - `mkdir` - creates a directory
@@ -41,7 +41,8 @@ fetch('https://example.com/touch/files/new_file.txt', {
   body: 'null'
 })
 
-fetch('https://example.com/ls/files/') // ['new_file.txt']
+fetch('https://example.com/ls/files/')
+// [{ name: 'new_file.txt', type: 'file' }]
 
 fetch('https://example.com/write/files/new_file.txt', {
   method: 'POST',
