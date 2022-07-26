@@ -35,13 +35,13 @@ fetch('https://example.com/mkdir/files', {
   body: 'null'
 })
 
-fetch('https://example.com/ls/files/') // ['new_file.txt']
-
 // An empty file will be created inside /files
 fetch('https://example.com/touch/files/new_file.txt', {
   method: 'POST',
   body: 'null'
 })
+
+fetch('https://example.com/ls/files/') // ['new_file.txt']
 
 fetch('https://example.com/write/files/new_file.txt', {
   method: 'POST',
