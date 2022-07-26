@@ -1,0 +1,31 @@
+{
+  "type": "module",
+  "name": "neos-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/debil03311/newcloud-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/debil03311/newcloud-server/issues"
+  },
+  "homepage": "https://github.com/debil03311/dangeru-js#readme",
+  "funding": {
+    "type": "ko-fi",
+    "url": "https://ko-fi.com/hosma"
+  },
+  "keywords": [],
+  "author": "hosma",
+  "license": "MIT",
+  "dependencies": {
+    "@tinyhttp/app": "^2.0.22",
+    "dotenv": "^16.0.1",
+    "milliparsec": "^2.2.2"
+  }
+}
