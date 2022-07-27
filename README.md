@@ -15,7 +15,7 @@ https://example.com/:commandName/:pathToFile*
 The following commands are available via the following request methods:
 
 - GET
-  - `ls` - responds with `Array<{name: String, type: String}>` where type is either `'file'` or `'folder'`
+  - `ls` - responds with `Array<{name: String, type: String}>` where type is either `'FILE'` or `'FOLDER'`
   - `cat` - responds with the contents of a file in plain text
 - POST
   - `mkdir` - creates a directory

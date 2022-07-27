@@ -56,8 +56,8 @@ app.get('/ls/*', (request, response)=> {
     .map((child)=> ({
       name: child,
       type: fs.statSync(`${localPath}/${child}`).isFile()
-        ? 'file'
-        : 'folder'
+        ? 'FILE'
+        : 'FOLDER'
     }))
 
   return (fs.statSync(localPath).isDirectory())
